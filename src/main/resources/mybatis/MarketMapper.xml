@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.co.kr.mapper.MarketMapper">
+
+	<!--select all-->
+	<select id="marketList" resultType="com.co.kr.domain.MarketListDomain">
+	  SELECT mk_seq, mb_id, mk_title, mk_content, mk_create_at, mk_update_at
+	  FROM jsp.market order by mk_update_at desc
+	</select>
+
+
+	<!-- content insert -->
+	<insert id="contentUpload" parameterType="com.co.kr.domain.MarketContentDomain"
+	useGeneratedKeys="true"
+        keyProperty="mkSeq" keyColumn="mk_seq">
+	
+        INSERT INTO jsp.market (
+            mb_id,   
+			mk_title,                         
+			mk_content  
+        )
+        VALUES (
+            #{mbId},
+            #{mkTitle},
+            #{mkContent}
+        )
+	</insert>
+	
+	<!-- file insert -->
+	<insert id="fileUpload" parameterType="com.co.kr.domain.MarketFileDomain">
+        INSERT INTO jsp.market_files (
+            mk_seq,
+            mb_id,   
+            up_original_file_name,                         
+            up_new_file_name,                      
+            up_file_path,                                   
+            up_file_size
+        )
+        VALUES (
+            #{mkSeq},
+            #{mbId},
+            #{upOriginalFileName},
+            #{upNewFileName},
+            #{upFilePath},
+            #{upFileSize}
+        )
+    </insert>
+
+		<!-- Content update -->
+    <update id="mkContentUpdate" parameterType="com.co.kr.domain.MarketContentDomain">
+        UPDATE jsp.market SET
+                mk_seq=#{mkSeq},
+                mb_id=#{mbId},
+                mk_title=#{mkTitle},
+                mk_content=#{mkContent}, 
+                mk_update_at=now()  
+        WHERE mk_seq=#{mkSeq}
+    </update>
+
+    <!-- file update -->
+    <update id="mkFileUpdate" parameterType="com.co.kr.domain.MarketFileDomain">
+        UPDATE jsp.market_files SET
+                mk_seq=#{mkSeq},
+                mb_id=#{mbId},
+                up_original_file_name=#{upOriginalFileName},
+                up_new_file_name=#{upNewFileName}, 
+                up_file_path=#{upFilePath},
+                up_file_size=#{upFileSize}
+        WHERE mk_seq=#{mkSeq}
+    </update>
+
+	<!-- Content delete -->
+    <delete id="mkContentRemove" parameterType="hashMap">
+       DELETE FROM jsp.market WHERE mk_seq=#{mkSeq}
+    </delete>
+	<!-- file delete -->
+    <delete id="mkFileRemove" parameterType="com.co.kr.domain.MarketFileDomain">
+	    DELETE FROM jsp.market_files WHERE up_new_file_name = #{upNewFileName}
+	</delete>
+	
+	
+	<!-- content -->
+	<select id="marketSelectOne" resultType="com.co.kr.domain.MarketListDomain" parameterType="map">
+	    SELECT mk_seq, mb_id, mk_title, mk_content, mk_create_at, mk_update_at
+	    FROM jsp.market where mk_seq = #{mkSeq}
+	</select>
+
+	<!-- file -->
+	<select id="marketSelectOneFile" resultType="com.co.kr.domain.MarketFileDomain" parameterType="map">
+	    SELECT mk_seq, mb_id, up_original_file_name, up_new_file_name, up_file_path, up_file_size
+	    FROM jsp.view_market where mk_seq = #{mkSeq}
+	</select>
+		
+</mapper>

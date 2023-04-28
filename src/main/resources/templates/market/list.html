@@ -1,0 +1,57 @@
+<div class="section list">
+    <table>
+        <th:block th:if="${items}">
+            <colgroup>
+                <col style="width: 5%"/>
+                <col style="width: 50%"/>
+                <col style="width: 10%"/>
+                <col style="width: 15%"/>
+                <col style="width: 15%"/>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>글번호</th>
+                    <th>제목</th>
+                    <th>아이디</th>
+                    <th>등록일</th>
+                    <th>수정일</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+              <tr th:each="item : ${items}">
+                  <td th:text="${item.mkSeq}"></td>
+                  <td><a th:text="${item.mkTitle}" th:href="@{/mkdetail(mkSeq = ${item.mkSeq})}"></a></td>
+                  <td th:text="${item.mbId}"></td>
+                  <td th:text="${item.mkCreateAt}"></td>
+                  <td th:text="${item.mkUpdateAt}"></td>
+              </tr>
+	        </th:block>    
+        </tbody>
+    </table>
+    
+    <th:block th:if="${mkdetail}">   
+        <h1 style="padding: 30px 0;" th:text="${mkdetail.mkTitle}"></h1>
+        <div style="text-align: right;">
+            <span style="color: #00a2be;">글번호 </span> <span th:text="${mkdetail.mkSeq}"></span> <span style="color: #00a2be"> | </span>
+            <span style="color: #00a2be">글쓴이 </span> <span th:text="${mkdetail.mbId}"></span> <span style="color: #00a2be"> | </span> 
+            <span th:text="${mkdetail.mkCreateAt}"></span> <span style="color: #00a2be"> | </span> 
+            <span th:text="${mkdetail.mkUpdateAt}"></span> 
+        </div>
+        
+        <div>
+            <p style="padding: 30px 0;" th:text="${mkdetail.mkContent}"></p>
+            <ul th:if="${files}"  th:each="file : ${files}" style="display: inline-block;margin-bottom: 5px;">
+                <li> <img id="imgId" th:src="@{${file.upNewFileName}}" alt="첨부이미지" height="280" /></li>
+            </ul>
+        </div>
+		<div style="padding: 30px 0; text-align:right;">
+			<th:block th:if="${mkdetail.mbId == session.id}">
+		        <a th:href="@{/mkedit(mkSeq = ${mkdetail.mkSeq})}"><button>수정</button></a>
+	            <a th:href="@{/mkremove(mkSeq = ${mkdetail.mkSeq})}"><button>삭제</button></a>			
+			</th:block>
+            <a th:href="@{mkList}"><button style="background-color: #00a2be; color: white; margin-left: 20px">목록으로</button></a>
+        </div>
+        
+    </th:block>
+</div>
